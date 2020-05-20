@@ -1,15 +1,15 @@
-const Order = Request('../model/order_schema')
-const queryOrderList = async ctx => {
+const Carts = require('../model/carts_schema')
+const getCartList = async ctx => {
     ctx.response.body='查询订单列表'
 }
-const addOrder = async function(ctx){
+const addToCart = async function(ctx){
     ctx.response.body='新增订单'
 }
-const deleOrder = async function(ctx){
+const deleCartItem = async function(ctx){
     ctx.response.body='删除订单'
 }
 module.exports={
-    queryOrderList,
-    addOrder,
-    deleOrder
+    getCartList,
+    addToCart,
+    deleCartItem
 }
