@@ -41,6 +41,18 @@ Vue.use(VueRouter)
     name: 'Login',
     component: () => import( '../views/Login.vue')
   },
+  // md
+  {
+    path: '/md',
+    name: 'md',
+    component: () => import( '../views/md.vue')
+  },
+  // nb
+  {
+    path: '/nb',
+    name: 'nb',
+    component: () => import( '../views/nb.vue')
+  },
 ]
 
 const router = new VueRouter({
