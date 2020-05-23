@@ -38,6 +38,11 @@ export default {
             })
         },
         cnmdbi(url,method){
+            console.log(
+                `url ${url}
+                method ${method}
+                `
+            )
             this.Axios({
                 method:'GET',
                 url:'/api/order/getCartList'
@@ -48,6 +53,28 @@ export default {
             }) 
 
         },
+        cnmdbi(url,method){
+            console.log(
+                `url ${url}
+                method ${method}
+                `
+            )
+            this.Axios({
+                method:method,
+                url:url,
+                data:{
+                    name:'张三',
+                    age:18
+
+                },
+            }).then(res=>{
+            console.log(res)
+            }).catch(err=>{
+            console.log(err)
+            }) 
+
+        },
+       
         fn3(){
             alert(this.str)
         }
