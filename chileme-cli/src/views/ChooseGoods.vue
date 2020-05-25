@@ -146,6 +146,18 @@ export default {
     },
     methods:{
         clickHandle(obj){
+            this.Axios({
+            method:'POST',
+            url:'/api/order/addToCart',
+            data:{
+                goodId:obj.id
+            }
+            }).then(res =>{
+                console.log(res)
+            }).catch(err =>{
+                onsole.log(err)
+
+            })
             let flag = false
             for(let i=0;i<this.list.length;i++){
                 if(obj.id === this.list[i].id){
