@@ -4,18 +4,18 @@
  * goodsid: String,商品id
  * goodsname: String,商品名称
  * goodsprice:Number,商品价格
- * */ 
+ * */
 
 const mongoose = require('mongoose')
 const schema = mongoose.Schema
 
 const Carts = new schema({
-    mobile  : Number ,
-    user    : String ,
-    goodsid : Number ,
-    goodsname : String,
-    price : Number
+    mobile: Number,
+    user: String,
+    goodsid: Number,
+    goodsname: String,
+    price: Number
 })
 
-module.exports = 
-mongoose.model('Carts',Carts)
+module.exports =
+    mongoose.model('Carts', Carts)
