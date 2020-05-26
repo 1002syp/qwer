@@ -12,10 +12,10 @@ const schema = mongoose.Schema
 const Carts = new schema({
     mobile: Number,
     user: String,
-    goodsid: Number,
-    goodsname: String,
+    goodid: Number,
+    goodname: String,
     price: Number
 })
 
 module.exports =
-    mongoose.model('Carts', Carts)
+mongoose.model('Carts', Carts)

@@ -1,5 +1,5 @@
 const Carts = require('../model/carts_schema')
-
+const Goods = require('../model/goods_schema')
 const getCartList = async ctx => {
     await Carts.find().then(res => {
         // Console.log(res)
@@ -27,7 +27,7 @@ const addToCart = async function (ctx) {
         Console.log(res) //若在库中查到对应的数据  res返回该数据的对象  若查不到对应的数据则返回 null
         // 对执行结果就行判断  根据!!res来判断是否查到数据  查到的话res是一个对象 查不到则返回是一个null
         if (!!res) { //res:{}/null !!{}:true   !!null:false
-
+            flag = res
         } else {
             //!!null:false
             ctx.body = {
@@ -75,7 +75,24 @@ const addToCart = async function (ctx) {
     ctx.body = '请求成功'
 }
 const deleCartItem = async function (ctx) {
-    ctx.body = '删除订单'
+    let arg = atx.request.body
+    console.log(arg)
+    await Carts.deleteOne({
+        goodId: arg.goodId
+    }).then(res => {
+        ctx.body = {
+            success: true,
+            msg: '删除成功'
+        }
+    })
+        .catch(err => {
+            console.log(err)
+            ctx.body = {
+                success: false,
+                msg: '删除失败'
+            }
+        })
+
 }
 module.exports = {
     getCartList,
