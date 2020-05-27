@@ -1,4 +1,4 @@
-np<template lang="pug">
+<<template lang="pug">
     div.chooseGoods
         el-row
             el-col(:span='8')
@@ -7,13 +7,14 @@ np<template lang="pug">
                         el-tab-pane(label="购物车")
                             div 
                                 el-table(:data='list',style="width: 100%",border)
-                                el-table-column(type="index")
-                                    el-table-column(prop="name",label="名称",width="180")
+                                    el-table-column(type="index")
+                                    el-table-column(prop="goodname",label="名称",width="180")
                                     el-table-column(prop="price",label="价格")
                                     el-table-column(fixed="right",label="操作",width="100")
                                         template(slot-scope="scope")
                                             el-button(type="text",size="small",@click='deleteHandle(scope.row)') 删除
-                            div {{`总价: ${totalPrice}`}}
+                            div {{`computed 总价: ${totalPrice}`}}
+                            div {{`watch 总价 ${totalPriceWatch}`}}
                         el-tab-pane(label="订单")
                             div 
                                 el-table(:data='orderList',style="width: 100%",border)
@@ -28,58 +29,58 @@ np<template lang="pug">
                     div.suggestFood
                         h4 推荐菜
                         div.foodsbox
-                            div.foodItem(v-for='item in foodsbox',:key='item.id',@click='clickHandle(item)') {{item.name}}
+                            div.foodItem(v-for='item in foodsbox',:key='item.goodId',@click='clickHandle(item)') {{item.goodname}}
                                 span {{`￥${item.price}`}}
                         div.foodstab
                             el-tabs(type="border-card")
                                 el-tab-pane(label="热菜")
                                     div.hotbox
-                                        div.foodsCard(v-for='item in hotList',:key='item.id')
+                                        div.foodsCard(v-for='item in hotList',:key='item.goodId')
                                             el-row
                                                 el-col(:span="8")
                                                     div.cardimg
                                                 el-col(:span="16")
                                                     div.cardinfo
-                                                        div.foodname {{item.name}}
+                                                        div.foodname {{item.goodname}}
                                                         div.foodmart {{`材料: ${item.material.join(',')}`}}
                                                         div.foodrank 
-                                                            el-rate(v-model="item.rank",disabled)
+                                                            el-rate(v-model="item.rate",disabled)
                                                         div.foodprice {{`价格: ${item.price}`}}
                                                         el-button(@click='clickHandle(item)') 下单
                                 el-tab-pane(label="凉菜") 
                                     div.coldbox
-                                        div.foodsCard(v-for='item in coldList',:key='item.id')
+                                        div.foodsCard(v-for='item in coldList',:key='item.goodId')
                                             el-row
                                                 el-col(:span="8")
                                                     div.cardimg
                                                 el-col(:span="16")
                                                     div.cardinfo
-                                                        div.foodname {{item.name}}
+                                                        div.foodname {{item.goodname}}
                                                         div.foodmart {{`材料: ${item.material.join(',')}`}}
                                                         div.foodrank 
-                                                            el-rate(v-model="item.rank",disabled)
+                                                            el-rate(v-model="item.rate",disabled)
                                                         div.foodprice {{`价格: ${item.price}`}}
                                                         el-button(@click='clickHandle(item)') 下单
                                 el-tab-pane(label="主食")
                                     div.ricebox
-                                        div.foodsCard(v-for='item in riceList',:key='item.id')
+                                        div.foodsCard(v-for='item in riceList',:key='item.goodId')
                                             el-row
                                                 el-col(:span="8")
                                                     div.cardimg
                                                 el-col(:span="16")
                                                     div.cardinfo
-                                                        div.foodname {{item.name}}
+                                                        div.foodname {{item.goodname}}
                                                         div.foodprice {{`价格: ${item.price}`}}
                                                         el-button(@click='clickHandle(item)') 下单
                                 el-tab-pane(label="饮料")
                                     div.drinkbox
-                                        div.foodsCard(v-for='item in drinkList',:key='item.id')
+                                        div.foodsCard(v-for='item in drinkList',:key='item.goodId')
                                             el-row
                                                 el-col(:span="8")
                                                     div.cardimg
                                                 el-col(:span="16")
                                                     div.cardinfo
-                                                        div.foodname {{item.name}}
+                                                        div.foodname {{item.goodname}}
                                                         div.foodprice {{`价格: ${item.price}`}}
                                                         el-button(@click='clickHandle(item)') 下单
 </template>
@@ -123,7 +124,8 @@ export default {
           user: "user5",
           phone: 13333333335
         }
-      ]
+      ],
+      totalPriceWatch: 0
     };
   },
   mounted() {
@@ -328,6 +330,23 @@ export default {
         price += Number(this.list[i].price); //对每件商品单价进行累加
       }
       return price; //将计算后的商品总价返回出去
+    }
+  },
+  computed: {
+    totalPrice() {
+      //获取购物车数据进行遍历
+      for (let i = 0; i < this.list.length; i++) {
+        count += Number(this.list[i].price);
+      }
+      return count;
+    }
+  },
+  watch: {
+    list: function(newVal, oldVal) {
+      this.totalPriceWatch = 0;
+      for (let i = 0; i < newVal.length; i++) {
+        this.totalPriceWatch += Number(newVal[i].price);
+      }
     }
   }
 };
