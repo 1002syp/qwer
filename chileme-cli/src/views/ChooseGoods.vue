@@ -15,6 +15,7 @@
                                             el-button(type="text",size="small",@click='deleteHandle(scope.row)') 删除
                             div {{`computed 总价: ${totalPrice}`}}
                             div {{`watch 总价 ${totalPriceWatch}`}}
+                            el-button(type="primary",@click='addOrder') 下单 cv
                         el-tab-pane(label="订单")
                             div 
                                 el-table(:data='orderList',style="width: 100%",border)
@@ -137,10 +138,9 @@ export default {
     clickHandle(obj) {
       this.Axios({
         method: "POST",
-        url: "/api/order/addToCart",
+        url: "/api/carts/addToCart",
         data: {
-          //goodId: obj.id
-          goodId: 12324523543252346
+          goodId: obj.goodId
         }
       })
         .then(res => {
@@ -148,24 +148,13 @@ export default {
           this.getCarts(); //请求购物车数据
         })
         .catch(err => {
-          onsole.log(err);
+          console.log(err);
         });
-      /*let flag = false;
-      for (let i = 0; i < this.list.length; i++) {
-        if (obj.id === this.list[i].id) {
-          flag = true; //当点击的数据在数组中存在，将flag置为true
-          break;
-        }
-      }
-      if (!flag) {
-        this.list.push(obj);
-      }
-      console.log(this.list);*/
     },
     deleteHandle(row) {
       this.Axios({
         method: "POST",
-        url: "/api/order/deleCartItem",
+        url: "/api/carts/deleCartItem",
         data: {
           goodId: row.goodId
         }
@@ -173,9 +162,7 @@ export default {
         .then(res => {
           this.getCarts(); //请求购物车数据
         })
-        .catch(err => {
-          //console.log(err);
-        });
+        .catch(err => {});
     },
     deleteOrderHandle(row) {
       for (let i = 0; i < this.orderList.length; i++) {
@@ -204,8 +191,8 @@ export default {
             // itemType 为cool的放在凉菜分类
             if (data.data.data[i].itemType == "cool")
               this.coldList.push(data.data.data[i]);
-            // itemType 为hot的放在热菜分类
-            if (data.data.data[i].itemType == "hot")
+            // itemType 为special的放在热菜分类
+            if (data.data.data[i].itemType == "special")
               this.hotList.push(data.data.data[i]);
             // itemType 为drink的放在饮料分类
             if (data.data.data[i].itemType == "drink")
@@ -223,8 +210,8 @@ export default {
     // 请求购物车中的商品数据
     getCarts() {
       this.Axios({
-        method: "GEt", // 请求方式
-        url: "/api/order/getCartList" // 接口地址
+        method: "GET", // 请求方式
+        url: "/api/carts/getCartsList" // 接口地址
       })
         .then(data => {
           // 请求成功的处理
@@ -289,15 +276,28 @@ export default {
     },
     // 添加订单数据
     addOrder() {
+        //13456789876
+        //123456
+        //获取购物车中的菜品数据
+        let arr=[]//定义一个空数组来存放购物车中的菜品id
+        //便利购物车数据  i是数据中元素的下标  从0开始到数组.length-1，结束
+        for(let i=0;i<this.list.length;i++){
+            //将购物车中每件商品的id放入arr中
+            arr.push(this.list[i].goodId)
+        }
+        console.log(arr)
+
       this.Axios({
-        method: "", // 请求方式
-        url: "", // 接口地址
+        method: "POST", // 请求方式
+        url: "/api/order/addToCart", // 接口地址
         data: {
           // 发送给后台的数据
-        }
+        },
+        widthCredential: true //允许该请求携带证书
       })
         .then(data => {
           // 请求成功的处理
+          console.log("下单");
         })
         .catch(err => {
           // 请求失败的处理
@@ -324,17 +324,8 @@ export default {
   },
   computed: {
     totalPrice() {
-      let price = 0; // 初始订单总价
-      for (let i = 0; i < this.list.length; i++) {
-        //将购物车中所有的商品进行遍历
-        price += Number(this.list[i].price); //对每件商品单价进行累加
-      }
-      return price; //将计算后的商品总价返回出去
-    }
-  },
-  computed: {
-    totalPrice() {
-      //获取购物车数据进行遍历
+      let count = 0;
+      // 获取购物车数据并进行遍历
       for (let i = 0; i < this.list.length; i++) {
         count += Number(this.list[i].price);
       }
