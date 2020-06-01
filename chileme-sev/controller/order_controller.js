@@ -2,6 +2,7 @@
 
 const Order = require('../model/order_schema')  // 引入订单的schema文件
 const user = require('../model/user_schema')
+const Goods = require('../model/goods_schema')
 // 查询订单列表
 
 const queryOrderList = async ctx => {
@@ -52,16 +53,37 @@ const addOrder = async function (ctx) {
             msg: '查询用户异常'
         }
     })
+    let totalprice = 0
+    //获取商品数据
+    await Goods.find({ goodId: { $in: req.idList } })
+        .then(res => {
+            console.log(res)
+            for (let i = 0; i < req.idList.length; i++) {
+                for (let j = 0; j < req.length; j++) {
+                    if (req.idList[i] == res[j].goodId) {
+                        totalprice += res[j].price
+                        break
+                    }
+                }
+            }
+        })
+        .catch(err => {
+            console.log(err)
+            ctx.body = {
+                success: false,
+                msg: '商品数据查询失败'
+            }
+        })
     //创造一条数据
     let orderItem = new Order({
         orderNo: 'ODR' + new Date().getTime(),
         state: 1,
-        price: 0,
+        price: totalprice,
         createTime: new Date().getTime(),
         detail: req.idList,
         way: 'online',
-        createPerson: '',
-        personld: 0,
+        createPerson: person.username,
+        personld: person.mobile,
     })
     //将创建的数据插入数据库
     await orderItem.save().then(res => {
