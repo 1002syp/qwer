@@ -96,39 +96,10 @@ export default {
       coldList: [], // 凉菜
       riceList: [], //主食
       drinkList: [], // 饮料
-      orderList: [
-        {
-          id: 1,
-          orderNo: "ODR123456",
-          date: "2020-01-11 12:00:00",
-          user: "user1",
-          phone: 13333333334
-        },
-        {
-          id: 2,
-          orderNo: "ODR123457",
-          date: "2020-01-12 12:00:00",
-          user: "user2",
-          phone: 13333333337
-        },
-        {
-          id: 3,
-          orderNo: "ODR123458",
-          date: "2020-01-14 12:00:00",
-          user: "user4",
-          phone: 13333333336
-        },
-        {
-          id: 4,
-          orderNo: "ODR123459",
-          date: "2020-02-16 13:00:00",
-          user: "user5",
-          phone: 13333333335
-        }
-      ],
-      totalPriceWatch: 0
-    };
-  },
+      orderList: [],
+      totalPriceWatch:0,
+    }
+},    
   mounted() {
     this.getFoods(); //请求菜单数据
     this.getCarts(); //请求购物车数据
@@ -164,14 +135,7 @@ export default {
         })
         .catch(err => {});
     },
-    deleteOrderHandle(row) {
-      for (let i = 0; i < this.orderList.length; i++) {
-        if (this.orderList[i].id === row.id) {
-          this.orderList.splice(i, 1);
-          break;
-        }
-      }
-    },
+   
     //请求菜单数据
     getFoods() {
       this.Axios({
@@ -226,54 +190,20 @@ export default {
     // 请求订单数据
     getOrders() {
       this.Axios({
-        method: "", // 请求方式
-        url: "", // 接口地址
-        data: {
-          // 发送给后台的数据
-        }
+        method: "GEt", // 请求方式
+        url: "/api/order/queryOrderList", // 接口地址
+       
       })
         .then(data => {
+           console.log(data)
+                this.orderList = data.data.list
           // 请求成功的处理
         })
         .catch(err => {
           // 请求失败的处理
           console.log(err);
         });
-    },
-    // 向购物车中添加商品
-    addGoods() {
-      this.Axios({
-        method: "", // 请求方式
-        url: "", // 接口地址
-        data: {
-          // 发送给后台的数据
-        }
-      })
-        .then(data => {
-          // 请求成功的处理
-        })
-        .catch(err => {
-          // 请求失败的处理
-          console.log(err);
-        });
-    },
-    // 从购物车中删除商品
-    deleGoods() {
-      this.Axios({
-        method: "", // 请求方式
-        url: "", // 接口地址
-        data: {
-          // 发送给后台的数据
-        }
-      })
-        .then(data => {
-          // 请求成功的处理
-        })
-        .catch(err => {
-          // 请求失败的处理
-          console.log(err);
-        });
-    },
+    },   
     // 添加订单数据
     addOrder() {
         //13456789876
@@ -305,23 +235,19 @@ export default {
         });
     },
     // 删除订单数据
-    deleOrder() {
+     deleteOrderHandle(row) {
       this.Axios({
-        method: "", // 请求方式
-        url: "", // 接口地址
-        data: {
-          // 发送给后台的数据
-        }
-      })
-        .then(data => {
-          // 请求成功的处理
-        })
-        .catch(err => {
-          // 请求失败的处理
-          console.log(err);
-        });
-    }
-  },
+                method:'POST',
+                url:'/api/carts/deleCartItem',
+                data:{
+                    goodId:row.goodId
+                }
+            }).then(res => {
+                this.getCarts() //请求购物车数据
+            }).catch(err => {
+
+            })
+    }, 
   computed: {
     totalPrice() {
       let count = 0;
